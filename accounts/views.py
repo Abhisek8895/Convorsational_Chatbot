@@ -40,6 +40,9 @@ def home(request):
     return render(request, "home.html")
 
 def landing_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     return render(request, "landing.html")
 
 def logout_view(request):
