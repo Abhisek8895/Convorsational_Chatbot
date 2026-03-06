@@ -38,3 +38,6 @@ def login_view(request):
 @login_required
 def home(request):
     return render(request, "home.html")
+
+def landing_view(request):
+    return render(request, "landing.html")
