@@ -2,14 +2,74 @@
 <html>
 <head>
     <title>Conversational Chatbot</title>
+
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color:#0f172a;
+            color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .container{
+            text-align:center;
+        }
+
+        h1{
+            font-size:40px;
+            margin-bottom:40px;
+        }
+
+        .btn{
+            padding:12px 30px;
+            margin:10px;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .login{
+            background-color:#2563eb;
+            color:white;
+        }
+
+        .login:hover{
+            background-color:#1d4ed8;
+        }
+
+        .signup{
+            background-color:#10b981;
+            color:white;
+        }
+
+        .signup:hover{
+            background-color:#059669;
+        }
+    </style>
+
 </head>
 <body>
+
+<div class="container">
 
 <h1>Welcome to Conversational Chatbot</h1>
 
 <a href="/login/">
-    <button>Login</button>
+<button class="btn login">Login</button>
 </a>
+
+<a href="/signup/">
+<button class="btn signup">Sign Up</button>
+</a>
+
+</div>
 
 </body>
 </html>
