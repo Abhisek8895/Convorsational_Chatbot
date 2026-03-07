@@ -9,26 +9,33 @@ import uuid
 
 
 @login_required
-def chat_view(request):
+def chat_view(request, session_id = None):
 
     user = request.user
 
-    # Create or get session id
-    session_id = request.session.get('session_id')
-
-    if not session_id:
-        session_id = str(uuid.uuid4())
-        request.session['session_id'] = session_id
-
-        session = ChatSession.objects.create(
-            user=user,
-            session_id=session_id
-        )
-    else:
+    if session_id:
         session = ChatSession.objects.get(
             user=user,
             session_id=session_id
         )
+        request.session["session_id"] = session_id
+
+    else:
+        session_id = request.session.get("session_id")
+
+        if not session_id:
+            session_id = str(uuid.uuid4())
+            request.session["session_id"] = session_id
+
+            session = ChatSession.objects.create(
+                user=user,
+                session_id=session_id
+            )
+        else:
+            session = ChatSession.objects.get(
+                user=user,
+                session_id=session_id
+            )
 
     # Handle user message
     if request.method == "POST":
@@ -78,5 +85,9 @@ def chat_view(request):
     messages = ChatMessage.objects.filter(
         session=session
     ).order_by("created_at")
+    # Fetch all sessions for the sidebar
+    conversations = ChatSession.objects.filter(
+        user=user
+    ).order_by("-created_at")
 
-    return render(request, "chat.html", {"messages": messages})
+    return render(request, "chat.html", {"messages": messages,"conversations":conversations})

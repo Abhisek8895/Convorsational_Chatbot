@@ -1,42 +1,234 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat with AI</title>
+<title>AI Chat</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#0f172a;
+    color:white;
+    height:100vh;
+    display:flex;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:#020617;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid #1e293b;
+}
+
+.sidebar h3{
+    margin-top:0;
+    margin-bottom:15px;
+}
+
+.conversation{
+    padding:10px;
+    border-radius:6px;
+    margin-bottom:8px;
+    background:#1e293b;
+    cursor:pointer;
+}
+
+.conversation:hover{
+    background:#334155;
+}
+
+/* MAIN AREA */
+
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* NAVBAR */
+
+.navbar{
+    height:60px;
+    background:#020617;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 20px;
+    border-bottom:1px solid #1e293b;
+}
+
+.logout{
+    background:#ef4444;
+    border:none;
+    padding:8px 16px;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.logout:hover{
+    background:#dc2626;
+}
+
+/* CHAT AREA */
+
+.chat-box{
+    flex:1;
+    padding:25px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+/* MESSAGES */
+
+.message{
+    max-width:60%;
+    padding:12px 16px;
+    border-radius:10px;
+    line-height:1.4;
+}
+
+.user{
+    align-self:flex-end;
+    background:#2563eb;
+}
+
+.ai{
+    align-self:flex-start;
+    background:#1e293b;
+}
+
+/* INPUT AREA */
+
+.input-area{
+    padding:15px;
+    border-top:1px solid #1e293b;
+    background:#020617;
+    display:flex;
+}
+
+.input-area input{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:#1e293b;
+    color:white;
+    margin-right:10px;
+}
+
+.input-area input:focus{
+    outline:none;
+}
+
+.input-area button{
+    padding:12px 20px;
+    border:none;
+    background:#10b981;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.input-area button:hover{
+    background:#059669;
+}
+
+.empty{
+    text-align:center;
+    color:#94a3b8;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h2>Chat with AI</h2>
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-<div id="chat-box">
-    {% for msg in messages %}
+    <h3>Conversations</h3>
 
-        {% if msg.role == "user" %}
-            <p><strong>You:</strong> {{ msg.message }}</p>
-        {% else %}
-            <p><strong>AI:</strong> {{ msg.message }}</p>
-        {% endif %}
+{% for convo in conversations %}
+<a href="/chat/{{ convo.session_id }}/" style="text-decoration:none;">
+<div class="conversation">
+    Chat {{ forloop.counter }}
+</div>
+</a>
+{% empty %}
+<p>No conversations</p>
+{% endfor %}
 
-    {% empty %}
-        <p>No messages yet. Start the conversation!</p>
-
-    {% endfor %}
 </div>
 
-<hr>
 
-<form method="post">
-    {% csrf_token %}
-    
-    <input 
-        type="text" 
-        name="message" 
-        placeholder="Type your message..." 
-        required
-    >
+<!-- MAIN CHAT AREA -->
+<div class="main">
 
-    <button type="submit">Send</button>
+<!-- NAVBAR -->
+<div class="navbar">
+
+<h3>AI Chat</h3>
+
+<form action="/logout/" method="post">
+{% csrf_token %}
+<button class="logout">Logout</button>
+</form>
+
+</div>
+
+
+<!-- CHAT MESSAGES -->
+<div class="chat-box">
+
+{% for msg in messages %}
+
+    {% if msg.role == "user" %}
+        <div class="message user">
+            {{ msg.message }}
+        </div>
+    {% else %}
+        <div class="message ai">
+            {{ msg.message }}
+        </div>
+    {% endif %}
+
+{% empty %}
+
+<div class="empty">
+Start a conversation with the AI
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<!-- MESSAGE INPUT -->
+
+<form method="post" class="input-area">
+{% csrf_token %}
+
+<input 
+type="text"
+name="message"
+placeholder="Send a message..."
+required
+>
+
+<button type="submit">Send</button>
 
 </form>
+
+</div>
 
 </body>
 </html>
