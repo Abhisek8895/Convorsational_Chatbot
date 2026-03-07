@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+</head>
+<body>
+    <h2>Chat with AI</h2>
+    
+    <div id="chat-box">
+        {% for msg in messages %}
+            <p><strong>{{ msg.role }}:</strong> {{ msg.message }}</p>
+        {% endfor %}
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="message" placeholder="Type your message..." required>
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>
