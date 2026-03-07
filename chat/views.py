@@ -87,7 +87,8 @@ def chat_view(request, session_id = None):
     ).order_by("created_at")
     # Fetch all sessions for the sidebar
     conversations = ChatSession.objects.filter(
-        user=user
-    ).order_by("-created_at")
+        user=user,
+        chatmessage__isnull=False
+    ).distinct().order_by("-created_at")
 
     return render(request, "chat.html", {"messages": messages,"conversations":conversations})
