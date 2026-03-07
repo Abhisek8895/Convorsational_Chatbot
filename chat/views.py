@@ -1,31 +1,82 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import ChatSession, ChatMessage
+from .llm import generate_ai_response
+
+from langchain_core.messages import HumanMessage, AIMessage
+
 import uuid
+
 
 @login_required
 def chat_view(request):
+
     user = request.user
 
     # Create or get session id
-    session_id = request.session.get('id')
+    session_id = request.session.get('session_id')
+
     if not session_id:
-        session_id = str(uuid.uuid4())  # generate unique session_id
+        session_id = str(uuid.uuid4())
         request.session['session_id'] = session_id
-        session = ChatSession.objects.create(user=user, session_id=session_id)
+
+        session = ChatSession.objects.create(
+            user=user,
+            session_id=session_id
+        )
     else:
-        session = ChatSession.objects.get(user = user, session_id=session_id)
+        session = ChatSession.objects.get(
+            user=user,
+            session_id=session_id
+        )
 
-    # Save messages 
-    if request.method == 'POST':
-        user_message = request.POST.get('message')
+    # Handle user message
+    if request.method == "POST":
+
+        user_message = request.POST.get("message")
+
         if user_message:
-            ChatMessage.objects.create(session = session, role= 'user', message = user_message)
 
-            ai_response = "Hi, I am currently getting build. Please wait until I am finished...😀"
-            ChatMessage.objects.create(session = session, role= 'ai', message = ai_response)
-    
-    # Fetch all the messages
-    messages = ChatMessage.objects.filter(session = session).order_by('created_at')
+            # Save user message
+            ChatMessage.objects.create(
+                session=session,
+                role="user",
+                message=user_message
+            )
 
-    return render(request, 'chat.html', {'messages': messages})
+            # Load chat history
+            previous_messages = ChatMessage.objects.filter(
+                session=session
+            ).order_by("created_at")
+
+            chat_history = []
+
+            for msg in previous_messages:
+                if msg.role == "user":
+                    chat_history.append(
+                        HumanMessage(content=msg.message)
+                    )
+                else:
+                    chat_history.append(
+                        AIMessage(content=msg.message)
+                    )
+
+            # Generate AI response using LLM
+            ai_response = generate_ai_response(
+                chat_history,
+                user_message
+            )
+
+            # Save AI response
+            ChatMessage.objects.create(
+                session=session,
+                role="ai",
+                message=ai_response
+            )
+
+    # Fetch all messages for display
+    messages = ChatMessage.objects.filter(
+        session=session
+    ).order_by("created_at")
+
+    return render(request, "chat.html", {"messages": messages})
