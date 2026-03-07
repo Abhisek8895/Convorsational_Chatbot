@@ -55,7 +55,13 @@ def chat_view(request, session_id = None):
                 role="user",
                 message=user_message
             )
-
+            # Add sessio title
+            if not session.title:
+                max_length = 50
+                session.title = user_message.strip()
+                if len(session.title) > max_length:
+                    session.title = session.title[:max_length-3] + "..."
+                session.save()
             # Load chat history
             previous_messages = ChatMessage.objects.filter(
                 session=session

@@ -173,7 +173,7 @@ body{
 {% for convo in conversations %}
 <a href="/chat/{{ convo.session_id }}/" style="text-decoration:none;">
 <div class="conversation">
-    Chat {{ forloop.counter }}
+    {{ convo.title }}
 </div>
 </a>
 {% empty %}
