@@ -27,21 +27,16 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect("home")
+            return redirect("chat")
 
     else:
         form = AuthenticationForm()
 
     return render(request, "login.html", {"form": form})
 
-
-@login_required
-def home(request):
-    return render(request, "home.html")
-
 def landing_view(request):
     if request.user.is_authenticated:
-        return redirect("home")
+        return redirect("chat")
 
     return render(request, "landing.html")
 
