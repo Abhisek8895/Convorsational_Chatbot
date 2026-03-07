@@ -102,4 +102,4 @@ def chat_view(request, session_id = None):
         chatmessage__isnull=False
     ).distinct().order_by("-created_at")
 
-    return render(request, "chat.html", {"messages": messages,"conversations":conversations})
+    return render(request, "chat.html", {"messages": messages,"conversations":conversations, "user":user})
