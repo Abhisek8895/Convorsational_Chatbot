@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from .models import ChatSession, ChatMessage
 from .llm import generate_ai_response
@@ -12,7 +12,12 @@ import uuid
 def chat_view(request, session_id = None):
 
     user = request.user
+    # Start new chat
+    if request.GET.get("new"):
+        if "session_id" in request.session:
+            del request.session["session_id"]
 
+        return redirect("chat")
     if session_id:
         session = ChatSession.objects.get(
             user=user,
