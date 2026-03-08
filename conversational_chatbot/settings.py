@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'chat',
+    'django.contrib.humanize',
+    'markdownify',
 ]
 
 MIDDLEWARE = [

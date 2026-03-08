@@ -1,3 +1,4 @@
+{% load markdownify %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,9 +147,52 @@ body{
     color:#94a3b8;
 }
 
+.message.ai h1,
+.message.ai h2,
+.message.ai h3{
+    margin:10px 0;
+}
+
+.message.ai ul{
+    padding-left:20px;
+}
+
+.message.ai li{
+    margin-bottom:5px;
+}
+
+.message.ai strong{
+    font-weight:bold;
+}
+
+.message.ai code{
+    background:#020617;
+    padding:4px 6px;
+    border-radius:4px;
+}
+
+.message.ai pre{
+    background:#020617;
+    padding:10px;
+    border-radius:6px;
+    overflow-x:auto;
+}
+
 </style>
 
 </head>
+
+<!-- JS for scrolling to recent message -->
+<script>
+const chatBox = document.querySelector(".chat-box");
+
+function scrollToBottom(){
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+window.onload = scrollToBottom;
+</script>
+
 
 <body>
 
@@ -210,7 +254,7 @@ body{
         </div>
     {% else %}
         <div class="message ai">
-            {{ msg.message }}
+            {{ msg.message|markdownify }}
         </div>
     {% endif %}
 
